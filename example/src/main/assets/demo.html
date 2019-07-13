@@ -35,6 +35,9 @@
         <p>
             <input type="file" value="打开文件" />
         </p>
+        <p>
+            <input type="button" id="testLocation" value="testLocation" onclick="testLocation();" />
+        </p>
     </body>
     <script>
         function testDiv() {
@@ -109,6 +112,16 @@
                 }
             });
         })
+
+        function testLocation() {
+            xwft.getLocation({ age: 11 }, function (res, err) {
+                if(err){
+                    console.log("got callback, error. "+err);
+                }else{
+                    console.log("got callback, success. "+JSON.stringify(res));
+                }
+            });
+        }
     </script>
 
 </html>

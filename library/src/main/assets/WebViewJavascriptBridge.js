@@ -1,7 +1,7 @@
 //notation: js file can only use this kind of comments
 //since comments will cause error when use in webview.loadurl,
 //comments will be remove by java use regexp
-(function() {
+(function () {
     if (window.WebViewJavascriptBridge) {
         return;
     }
@@ -86,7 +86,7 @@
 
     //提供给native使用,
     function _dispatchMessageFromNative(messageJSON) {
-        setTimeout(function() {
+        setTimeout(function () {
             var message = JSON.parse(messageJSON);
             var responseCallback;
             //java call finished, now need to call js callback function
@@ -101,7 +101,7 @@
                 //直接发送
                 if (message.callbackId) {
                     var callbackResponseId = message.callbackId;
-                    responseCallback = function(responseData) {
+                    responseCallback = function (responseData) {
                         _doSend({
                             responseId: callbackResponseId,
                             responseData: responseData
@@ -132,7 +132,7 @@
             receiveMessageQueue.push(messageJSON);
         }
         _dispatchMessageFromNative(messageJSON);
-       
+
     }
 
     var WebViewJavascriptBridge = window.WebViewJavascriptBridge = {
@@ -143,6 +143,43 @@
         _fetchQueue: _fetchQueue,
         _handleMessageFromNative: _handleMessageFromNative
     };
+
+    function xwftGetLocation(param, callback) {
+        window.WebViewJavascriptBridge.callHandler('getLocation', param, function (response) {
+            console.log("xwftGetLocation------xxxxxxx");
+            var obj = JSON.parse(response);
+            callback(obj.res, obj.err);
+        });
+        console.log("xwftGetLocation--11------");
+    }
+
+    function xwftGetSystemInfo(param, callback) {
+        console.log("xwftGetSystemInfo--------");
+    }
+
+    function xwftCamera(param, callback) {
+        console.log("xwftCamera--------");
+    }
+
+    function xwftCloseWebview(param, callback) {
+        console.log("xwftCloseWebview--------");
+    }
+
+    if (window.xwft) {
+        console.log("xwft exist---------------");
+        window.xwft.getLocation = xwftGetLocation;
+        window.xwft.getSystemInfo = xwftGetSystemInfo;
+        window.xwft.camera = xwftCamera;
+        window.xwft.closeWebview = xwftCloseWebview;
+    } else {
+        console.log("xwft NOT exist---------------");
+        window.xwft = {
+            getLocation: xwftGetLocation,
+            getSystemInfo: xwftGetSystemInfo,
+            camera: xwftCamera,
+            closeWebview: xwftCloseWebview
+        };
+    }
 
     var doc = document;
     _createQueueReadyIframe(doc);
